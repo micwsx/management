@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaft.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+<nav th:replace="/shared/navigator::navigator"/>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light">
+            <tr>
+                <td>Id</td>
+                <td>推荐人Id</td>
+                <td>名称</td>
+                <td>别名</td>
+                <td>性别</td>
+                <td>城市</td>
+                <td>省份</td>
+                <td>国家</td>
+                <td>手机</td>
+                <td>邮箱</td>
+                <td>已关注</td>
+                <td>关注时间</td>
+                <td>已激活</td>
+                <td>备注</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="member,sate:${list}">
+                <td>
+                    <a th:href="@{show/{id}(id=${member.id})}"><span th:text="${member.id}"></span></a>
+                </td>
+                <td>
+                    <a th:href="@{show/{id}(id=${member.refId})}"><span th:text="${member.refId}"></span></a>
+                </td>
+                <td th:text="${member.name}"></td>
+                <td th:text="${member.nickName}"></td>
+                <td th:text="${member.gender?'男':'女'}"></td>
+                <td th:text="${member.city}"></td>
+                <td th:text="${member.province}"></td>
+                <td th:text="${member.country}"></td>
+                <td th:text="${member.mobile}"></td>
+                <td th:text="${member.email}"></td>
+                <td>
+                    <input type="checkbox" class="checkbox" th:check="${member.subscribe}" disabled/>
+                </td>
+                <td th:text="${#dates.format(member.subscribeTime,'yyyy-MM-dd hh:mm:ss')}"></td>
+                <td><input type="checkbox" class="checkbox" th:checked="${member.active}" disabled/></td>
+                <td th:text="${member.remark}"></td>
+            </tr>
+            </tbody>
+
+        </table>
+    </div>
+</div>
+</body>
+</html>

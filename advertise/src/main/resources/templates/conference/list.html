@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<nav th:replace="/shared/navigator::navigator"/>
+
+<div class="container">
+    <div class="row pt-2">
+        <div class="col">
+
+            <!--查询条件-->
+            <form action="getAll" method="post">
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <input type="text" class="form-control mb-2" name="serialNum" placeholder="编码" th:value="${serialNum}">
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" class="form-control mb-2" name="startTime" placeholder="时间" th:value="2020-10-01">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-2">查询</button>
+                    </div>
+                </div>
+
+                <!--分页显示数据-->
+                <ul class="list-unstyled " th:each="item, state:${pageInfo.list}">
+                    <li th:attr="id=${item.id}" th:class="${#bools.isFalse(item.released)}? 'media alert-info':'media'">
+                        <img th:src="${item.banner}" style="width:256px;max-height: 128px"
+                             class="mr-3 align-self-center"
+                             alt="banner">
+                        <div class="media-body">
+                            <h5 class="mt-0 mb-1"><a th:href="@{show/{id}(id=${item.id})}"><span
+                                    th:text="${item.topic}"></span></a></h5>
+                            <h6><span th:text="${item.location}"></span></h6>
+                            <h6><span th:text="${item.startTime}"></span> - <span
+                                    th:text="${item.endTime}"></span>,<span th:text="${item.seatNum}"></span></h6>
+                            <h6 th:text="${#strings.concat(item.hoster,',',item.guest)}"></h6>
+                            <h6 class="text-wrap" th:text="${item.brief}"></h6>
+                        </div>
+                        <button type="button" class="btn btn-light"
+                                th:attr="name=${item.id},data-released=${item.released}"
+                                data-toggle="popover" data-placement="bottom">
+                            <span aria-hidden="true" class="fa fa-ellipsis-h"></span>
+                        </button>
+                    </li>
+                </ul>
+                <div class="float-left">
+                    <a class="btn btn-link" href="show">添加</a>
+                </div>
+                <!--页码-->
+                <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="text-center mr-2" role="group" style="line-height: 40px" aria-label="First group">
+                        共<span th:text="${pageInfo.pages}"></span>页 |
+                        当前有<span th:text="${pageInfo.size}"></span>条
+                    </div>
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <a class="btn btn-link"
+                           th:href="@{getAll(serialNum=${serialNum},startTime=${startTime},currentPage=${pageInfo.navigateFirstPage},pageSize=${pageInfo.pageSize})}">首页</a>
+                        <a class="btn btn-link"
+                           th:href="@{getAll(serialNum=${serialNum},startTime=${startTime},currentPage=${pageInfo.prePage},pageSize=${pageInfo.pageSize})}">上一页</a>
+                        <a class="btn btn-link"
+                           th:href="@{getAll(serialNum=${serialNum},startTime=${startTime},currentPage=${pageInfo.nextPage},pageSize=${pageInfo.pageSize})}">下一页</a>
+                        <a class="btn btn-link"
+                           th:href="@{getAll(serialNum=${serialNum},startTime=${startTime},currentPage=${pageInfo.navigateLastPage},pageSize=${pageInfo.pageSize})}">末页</a>
+                    </div>
+                    <!--所有导航页号-->
+                    <div class="btn-group text-center mr-1" style="line-height: 40px" role="group"
+                         aria-label="Third group" th:each="navNum,state:${pageInfo.navigatepageNums}">
+                        <a class="btn-link"
+                           th:href="@{getAll(serialNum=${serialNum},startTime=${startTime},currentPage=${navNum},pageSize=${pageInfo.pageSize})}"><span
+                                th:text="${navNum}"></span></a>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Third group">
+                        <div class="form-inline">
+                            当前页 &nbsp;
+                            <input type="text" class="form-control form-control-sm" style="width:35px;"
+                                   name="currentPage" th:value="${pageInfo.pageNum}"/>
+                            &nbsp;&nbsp;
+                            显示数量&nbsp;
+                            <input type="text" class="form-control form-control-sm" style="width:35px;" name="pageSize"
+                                   th:value="${pageInfo.pageSize}"/>
+                            &nbsp;&nbsp;
+                            <!-- <input  type="submit" class="btn btn-info btn-sm" value="GO"/>-->
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("[data-toggle='popover']").each(function () {
+
+            $(this).popover({
+                trigger: 'click',
+                container: 'body',
+                placement: 'bottom',
+                html: true,
+                content: miniMenu(this)
+            });
+
+        });
+
+        function releaseOrUnreleased(event) {
+            // console.log($(event.data.source).attr("name"));
+            // console.log($(event.data.source).attr("data-released"));
+            var button_menu = $(event.data.source);
+            var id = button_menu.attr("name");
+            // 相反操作
+            var val = button_menu.attr("data-released") == 'false' ? true : false;
+
+            console.log(val);
+            // ajax 更新数据
+            $.ajax({
+                url: 'hide',
+                method: 'post',
+                // 发送服务器数据string类型
+                data: JSON.stringify({id: id, val: val}),
+                // 请求类型
+                contentType: 'application/json',
+                // contentType:'application/x-www-form-urlencoded','multipart/form-data','application/json'
+                // 服务器返回数据类型xml/html/json/text
+                // dataType:'text',
+                success: function (result, status, error) {
+                    console.log(val);
+                    if (result) {
+                        $(button_menu).parent().toggleClass("alert-info");
+                        console.log($('#link_' + id).text());
+                        $(button_menu).attr("data-released", val.toString());
+                    }
+                }
+            });
+            $(button_menu).popover('hide');
+        }
+
+        function miniMenu(c) {
+            var id = $(c).attr("name");
+            var link = $('<a name="link_menu" id="link_' + id + '" title="发布修改为不发布，不发布修改为发布" class="btn-link" href="javascript:void(0)">反操作</a>');
+            $(document).on("click", '#link_' + id, {source: c}, releaseOrUnreleased);
+            var content = '<ul class=\"list-group\"><li class=\"list-group-item border-0 p-0 m-0\">' + link.prop("outerHTML") + '</li></ul>';
+            return content;
+        }
+
+        // function miniMenu(c) {
+        //     // alert('www');
+        //     var id = $(c).attr("name");
+        //     var released = $(c).attr("data-released");
+        //     var menu = (released == 'true' ? "不发布" : "发布");
+        //     var link = $('<a name="link_menu" id="link_' + id + '" class="btn-link" href="javascript:void(0)">' + menu + '</a>');
+        //     $(document).on("click", '#link_' + id, {source: c}, releaseOrUnreleased);
+        //     var content = '<ul class=\"list-group\"><li class=\"list-group-item border-0 p-0 m-0\">' + link.prop("outerHTML") + '</li></ul>';
+        //     return content;
+        // }
+    });
+</script>
+
+</body>
+</html>
+
+
+<!--<form action="getAll" method="get" class="form-inline">-->
+
+<!--    当前页 &nbsp;-->
+<!--    <input type="text" class="form-control form-control-sm" style="width:35px;" name="currentPage" th:value="${pageInfo.pageNum}"/>-->
+<!--    &nbsp;&nbsp;-->
+<!--    显示数量&nbsp;-->
+<!--    <input type="text" class="form-control form-control-sm" style="width:35px;" name="pageSize" th:value="${pageInfo.pageSize}"/>-->
+<!--    &nbsp;&nbsp;-->
+<!--    <input  type="submit" class="btn btn-info btn-sm" value="GO"/>-->
+<!--</form>-->

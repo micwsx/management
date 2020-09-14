@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col mt-5">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">异常</h5>
+                    <p class="card-text" th:text="${message}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

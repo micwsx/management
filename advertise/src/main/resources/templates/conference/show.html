@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<nav th:replace="/shared/navigator::navigator"/>
+<div class="container">
+    <form action="/conference/submit" method="post" enctype="multipart/form-data">
+
+            <!--会议数据-->
+            <div class="card">
+                <div class="card-header">
+                    会议
+                    <button type="button" class="btn btn-light float-right"
+                            data-toggle="popover" data-placement="bottom">
+                        <span aria-hidden="true" class="fa fa-ellipsis-h"></span>
+                    </button>
+                </div>
+                <fieldset th:disabled="${model.id!=null}">
+                    <div class="card-body">
+                       <div class="form-row">
+                           <div class="form-group col-md-6">
+                               <input type="hidden" name="id" th:value="${model.id}"/>
+                               <label>会议展示图</label>
+                               <div>
+                                   <img th:src="${model.banner}" class="img-thumbnail" style="max-height: 255px;">
+                                   <input type="file" id="banner" class="form-control-file mt-1" name="bannerImg"/>
+                               </div>
+                           </div>
+                           <div class="form-group col-md-6">
+                               <label>简要</label>
+                               <textarea class="form-control" name="brief" rows="9" th:text="${model.brief}"></textarea>
+                           </div>
+                       </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>编码</label>
+                                <input class="form-control" type="text" name="serialNumber" th:value="${model.serialNumber}"/>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>主题</label>
+                                <input class="form-control" type="text" name="topic"  th:value="${model.topic}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>会议介绍</label>
+                            <textarea class="form-control" name="introduction" rows="3" th:text="${model.introduction}"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>地点</label>
+                                <input class="form-control" type="text" name="location" th:value="${model.location}"/>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>人数</label>
+                                <input class="form-control" type="text" name="seatNum" th:value="${model.seatNum}"/>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>入场费用</label>
+                                <input class="form-control" type="text" name="fee" th:value="${model.fee}"/>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>是否发布</label>
+                                <input class="form-control" type="checkbox" name="released" style="width:5px;" th:checked="${model.isReleased()}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>举办时间</label>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <span class="fa fa-calendar"></span>
+                                            </div>
+                                        </div>
+                                        <input class="form-control" type="text" readonly id="startTime" name="startTime" th:value="${#dates.format(model.startTime, 'yyyy-MM-dd HH:mm:ss')}" placeholder="开始时间"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group date">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <span class="fa fa-calendar"></span>
+                                            </div>
+                                        </div>
+                                        <input class="form-control" type="text" readonly id="endTime" name="endTime" th:value="${#dates.format(model.endTime, 'yyyy-MM-dd HH:mm:ss')}" placeholder="结束时间"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>备注</label>
+                            <input  type="text" class="form-control" name="remark" th:value="${model.remark}"/>
+                        </div>
+                    </div>
+                    <div class="card-header">
+                        主持人
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>名字</label>
+                            <input type="text" class="form-control" name="hoster" th:value="${model.hoster}">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>图片</label>
+                                <div>
+                                    <img th:src="${model.hosterLink}" class="img-thumbnail" style="max-height: 255px;">
+                                    <input type="file" class="form-control-file mt-1" name="hosterImg"/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>主持人介绍</label>
+                                <textarea class="form-control" name="hosterBrief"  rows="9" th:text="${model.hosterBrief}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-header">
+                        嘉宾
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>名字</label>
+                            <input type="text" class="form-control" name="guest" th:value="${model.guest}">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>图片</label>
+                                <div>
+                                    <img th:src="${model.guestLink}" class="img-thumbnail" style="max-height: 255px;">
+                                    <input type="file" class="form-control-file mt-1" name="guestImg"/>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>嘉宾介绍</label>
+                                <textarea class="form-control" name="guestBrief" rows="9" th:text="${model.guestBrief}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="offset-5">
+                            <button type="submit" class="btn  btn-primary" name="submit">提交</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+    </form>
+</div>
+
+<!-- 官方地址：   https://www.malot.fr/bootstrap-datetimepicker/-->
+<script type="text/javascript" src="/bootstrap-datepicker-1.9.0/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="/bootstrap-datepicker-1.9.0/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        // 菜单按钮
+        $("[data-toggle='popover']").each(function () {
+            var link=$('<a href="javascript:void(0)" id="edit" class="btn-link" name="submit">编辑</a>');
+            $(document).on("click", 'a#edit', {source: this}, onEdit);
+            $(this).popover({
+                trigger: 'click',
+                container: 'body',
+                placement: 'bottom',
+                html: true,
+                content: '<ul class="list-group"><li class="list-group-item border-0 p-0 m-0">'+link.prop("outerHTML")+'</li></ul>'
+            });
+        });
+        // 编辑菜单事件
+        function onEdit(event) {
+            // 去掉/添加disabled属性
+            var flag=$("fieldset").attr("disabled");
+            if (flag){
+                $("fieldset").removeAttr("disabled");
+            }else{
+                $("fieldset").attr("disabled","disabled");
+            }
+            // 隐藏菜单
+            $(event.data.source).popover('hide');
+        };
+        // 日期控件
+        $("#startTime,#endTime").datetimepicker({
+            format:'yyyy-mm-dd hh:ii:00',
+            language:'zh-CN',
+            autoclose:true,
+            todayBtn:'linked'
+        }).on("changeDate",function (ev) {
+            console.log(ev.date.valueOf());
+        });
+    });
+</script>
+
+</body>
+</html>
+

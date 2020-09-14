@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<div class="pt-2 px-2">
+    <!--查询条件-->
+    <form action="/participant/query" method="post">
+            <div class="form-row align-items-center">
+                <input type="hidden" name="id" th:value="${condition.id}"/>
+                <div class="col-auto">
+                    <input type="text" class="form-control mb-2" name="memberId" placeholder="会员id"
+                           th:value="${condition.memberId}">
+                </div>
+                <div class="col-auto">
+                    <input type="text" class="form-control mb-2" name="memberName" placeholder="名字"
+                           th:value="${condition.memberName}">
+                </div>
+                <div class="col-auto">
+                    <select class="form-control mb-2" name="completed" th:field="${condition.completed}">
+                        <option th:selected="${condition.completed==null}" value="">所有</option>
+                        <option th:selected="${condition.completed}" value="true">已支付</option>
+                        <option th:selected="${condition.completed}" value="false">待支付</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-2">查询</button>
+                </div>
+            </div>
+
+            <!--分页显示数据-->
+            <div class="list-group">
+                <div th:attr="data-item=${item.id}" class="list-group-item list-group-item-action flex-column align-items-start"
+                     th:each="item,state:${pageInfo.list}">
+                    <div class="media">
+                        <img th:src="${item.memberHeadImgurl}" class="rounded-5 align-self-start mr-3"
+                             style="width:128px;height: 128px;"/>
+                        <div class="media-body">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">
+                                    <span th:text="${item.memberName}"></span>
+                                    <b class="alert-danger"><span th:text="${item.completed?'已支付':'待支付'}"></span></b>
+                                </h5>
+                                <a href="javascript:void(0)" name="del" th:attr="data-content=${item.id}" class="btn btn-link">
+                                    <small>踢除</small>
+                                </a>
+                            </div>
+                            <h6 class="mb-1"><span th:text="${item.paid}"></span> &nbsp;<i th:text="${item.ipAddr}"></i>
+                            </h6>
+                            <p class="mb-1" th:text="${item.ticketCodeNum}"></p>
+                            <p class="mb-1" th:text="${item.remark}"></p>
+                            <small th:text="${#dates.format(item.createdTime,'yyyy-MM-dd hh:mm:ss')}"></small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="float-left">
+                <a class="btn btn-link" th:href="@{/participant/add/{id}(id=${condition.id})}">添加</a>
+            </div>
+            <!--页码-->
+            <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="text-center mr-2" role="group" style="line-height: 40px" aria-label="First group">
+                    共<span th:text="${pageInfo.pages}"></span>页 |
+                    当前有<span th:text="${pageInfo.size}"></span>条
+                </div>
+                <div class="btn-group mr-2" role="group" aria-label="Second group">
+                    <a class="btn btn-link"
+                       th:href="@{/participant/query(id=${condition.id},memberId=${condition.memberId},memberName=${condition.memberName},completed=${condition.completed},currentPage=${pageInfo.navigateFirstPage},pageSize=${pageInfo.pageSize})}">首页</a>
+                    <a class="btn btn-link"
+                       th:href="@{/participant/query(id=${condition.id},memberId=${condition.memberId},memberName=${condition.memberName},completed=${condition.completed},currentPage=${pageInfo.prePage},pageSize=${pageInfo.pageSize})}">上一页</a>
+                    <a class="btn btn-link"
+                       th:href="@{/participant/query(id=${condition.id},memberId=${condition.memberId},memberName=${condition.memberName},completed=${condition.completed},currentPage=${pageInfo.nextPage},pageSize=${pageInfo.pageSize})}">下一页</a>
+                    <a class="btn btn-link"
+                       th:href="@{/participant/query(id=${condition.id},memberId=${condition.memberId},memberName=${condition.memberName},completed=${condition.completed},currentPage=${pageInfo.navigateLastPage},pageSize=${pageInfo.pageSize})}">末页</a>
+                </div>
+                <!--所有导航页号-->
+                <div class="btn-group text-center mr-1" style="line-height: 40px" role="group"
+                     aria-label="Third group" th:each="navNum,state:${pageInfo.navigatepageNums}">
+                    <a class="btn-link"
+                       th:href="@{/participantquery(id=${condition.id},memberId=${condition.memberId},memberName=${condition.memberName},completed=${condition.completed},memberId=${memberId},memberName=${memberName},currentPage=${navNum},pageSize=${pageInfo.pageSize})}"><span
+                            th:text="${navNum}"></span></a>
+                </div>
+                <div class="btn-group" role="group" aria-label="Third group">
+                    <div class="form-inline">
+                        当前页 &nbsp;
+                        <input type="text" class="form-control form-control-sm" style="width:35px;"
+                               name="currentPage" th:value="${pageInfo.pageNum}"/>
+                        显示数量&nbsp;
+                        <input type="text" class="form-control form-control-sm" style="width:35px;" name="pageSize"
+                               th:value="${pageInfo.pageSize}"/>
+                        <!-- <input  type="submit" class="btn btn-info btn-sm" value="GO"/>-->
+                    </div>
+                </div>
+            </div>
+        </form>
+</div>
+</body>
+</html>
+
+
+<script type="text/javascript">
+    $(function () {
+        var id;//保存删除id
+        $("a[name='del']").click(function () {
+            id=$(this).attr("data-content");
+            console.log("点击ID:"+id);
+            $(window.parent.document).find("#confirmDialog").modal({backdrop:false});
+        });
+
+        $(window.parent.document).find("#btn_del").click(function () {
+            console.log("删除ID："+id);
+            $.post('/participant/delete/'+id,'',function (data,textStatus,jqXHR) {
+                console.log("返回数据:"+data+"-类型："+typeof(data));
+                if (data) {
+                    //删除成功
+                    // console.log($("div.list-group-item[data-item='"+id+"']").length);
+                    $("div.list-group-item[data-item='"+id+"']").remove();
+                }
+            },'json');
+            $(window.parent.document).find("#confirmDialog").modal('hide');
+        })
+    });
+</script>

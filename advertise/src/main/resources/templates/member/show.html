@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<nav th:replace="/shared/navigator::navigator"/>
+<div class="container">
+    <form action="/member/edit" method="post" enctype="multipart/form-data">
+            <div class="card">
+                <div class="card-header">
+                    会员信息
+                    <button type="button" class="btn btn-light float-right"
+                            data-toggle="popover" data-placement="bottom">
+                        <span aria-hidden="true" class="fa fa-ellipsis-h"></span>
+                    </button>
+                </div>
+                <fieldset th:disabled="${model.id!=null}">
+                    <div class="card-body">
+                        <div class="form-row">
+                           <div class="form-group col-md-6">
+                               <label>头像</label>
+                               <img th:src="${model.headImgurl}" class="img-thumbnail" style="max-height: 255px;">
+                           </div>
+                           <div class="form-group col-md-6">
+                               <label>推荐码</label>
+                               <img th:src="${model.sharedQRcodeUrl}" class="img-thumbnail" style="max-height: 255px;">
+                           </div>
+                       </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>Id</label>
+                                <input class="form-control" readonly name="id" th:value="${model.id}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>推荐人Id</label>
+                                <input class="form-control" readonly type="text" name="refId" th:value="${model.refId}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>激活状态</label>
+                                <input class="form-control" type="checkbox" style="width: 5px;" name="active" th:checked="${model.active}"/>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>名称</label>
+                                <input class="form-control" type="text" name="name" th:value="${model.name}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>手机</label>
+                                <input class="form-control" name="mobile" th:value="${model.mobile}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>性别</label>
+                                <div class="form-control border-0">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" th:field="*{model.gender}" name="gender" id="male" value="1" disabled>
+                                        <label class="form-check-label" for="male">男</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" th:field="*{model.gender}" name="gender" id="female" value="0" disabled>
+                                        <label class="form-check-label" for="female">女</label>
+                                    </div>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>别名</label>
+                                <input class="form-control" type="text" readonly name="nickName" th:value="${model.nickName}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>邮箱</label>
+                                <input class="form-control" type="text" name="email" th:value="${model.email}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>语言</label>
+                                <input class="form-control" type="text" readonly name="lang" th:value="${model.lang}"/>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>城市</label>
+                                <input class="form-control" type="text" readonly name="city" th:value="${model.city}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>省份</label>
+                                <input class="form-control" type="text" readonly name="province" th:value="${model.province}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>国家</label>
+                                <input class="form-control" type="text" readonly name="country" th:value="${model.country}"/>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>关注状态</label>
+                                <input class="form-control" style="width: 5px;" type="checkbox" name="subscribe" th:checked="${model.subscribe}" disabled/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>关注时间</label>
+                                <input class="form-control" readonly type="text" name="subscribeTime"  th:value="${#dates.format(model.subscribeTime,'yyyy-MM-dd hh:mm:ss')}">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>备注</label>
+                                <input class="form-control" type="text" name="remark"  th:value="${model.remark}">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>unionId</label>
+                                <input type="text" class="form-control" readonly name="unionId" th:value="${model.unionId}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>groupId</label>
+                                <input type="text" class="form-control" readonly name="groupId" th:value="${model.groupId}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>tagidlist</label>
+                                <input type="text" class="form-control" readonly name="tagidlist" th:value="${model.tagidlist}"/>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>subscribeScene</label>
+                                <input type="text" class="form-control" readonly name="subscribeScene" th:value="${model.subscribeScene}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>qrScene</label>
+                                <input type="text" class="form-control" readonly name="qrScene" th:value="${model.qrScene}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>qrSceneStr</label>
+                                <input type="text" class="form-control" readonly name="qrSceneStr" th:value="${model.qrSceneStr}"/>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>纬度</label>
+                                <input type="text" class="form-control" readonly name="latitude" th:value="${model.latitude}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>经度</label>
+                                <input type="text" class="form-control" readonly name="longitude" th:value="${model.longitude}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>精确度</label>
+                                <input type="text" class="form-control" readonly name="precision" th:value="${model.precision}"/>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>onBlackList</label>
+                                <input type="checkbox" style="width: 5px;" class="form-control" name="onBlackList" th:checked="${model.onBlackList}" disabled/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>创建时间</label>
+                                <input type="text" class="form-control" readonly name="createdTime" th:value="${#dates.format(model.createdTime,'yyyy-MM-dd hh:mm:ss')}"/>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>修改时间</label>
+                                <input type="text" class="form-control" readonly name="changedTime" th:value="${#dates.format(model.changedTime,'yyyy-MM-dd hh:mm:ss')}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="offset-5">
+                                <button type="submit" class="btn  btn-primary" name="submit">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        // 菜单按钮
+        $("[data-toggle='popover']").each(function () {
+            var link=$('<a href="javascript:void(0)" id="edit" class="btn-link" name="edit">编辑</a>');
+            $(document).on("click", 'a#edit', {source: this}, onEdit);
+            $(this).popover({
+                trigger: 'click',
+                container: 'body',
+                placement: 'bottom',
+                html: true,
+                content: '<ul class="list-group"><li class="list-group-item border-0 p-0 m-0">'+link.prop("outerHTML")+'</li></ul>'
+            });
+        });
+        // 编辑菜单事件
+        function onEdit(event) {
+            // 去掉/添加disabled属性
+            var flag=$("fieldset").attr("disabled");
+            if (flag){
+                $("fieldset").removeAttr("disabled");
+            }else{
+                $("fieldset").attr("disabled","disabled");
+            }
+            // 隐藏菜单
+            $(event.data.source).popover('hide');
+        };
+
+    });
+</script>
+
+
+</body>
+</html>
+

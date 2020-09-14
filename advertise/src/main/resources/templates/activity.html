@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+<div class="container">
+    <div class="row pt-2">
+        <div class="col">
+            <div class="card-deck">
+                <div class="card">
+                    <img th:src="${conference.banner}" class="card-img-top" alt="活动主题">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${conference.topic}"></h5>
+                        <p class="card-title" th:text="${conference.brief}"></p>
+                        <p class="card-text"
+                           th:text="${#strings.concat(conference.location,'-',conference.hoster,'(',conference.hosterBrief,')')}"></p>
+                        <p class="card-text"><span
+                                th:text="${#dates.format(conference.startTime, 'yyyy/MM/dd HH:mm:ss')}"></span>-<span
+                                th:text="${#dates.format(conference.endTime, 'yyyy/MM/dd HH:mm:ss')}"></span></p>
+                        <p class="card-text">已报名<span th:text="${conference.participants.size()}"></span>人/剩余<span
+                                th:text="${conference.seatNum-conference.participants.size()}"></span>名额</p>
+                        <p class="card-text">入场费：<span th:text="${conference.fee}"></span> RMB</p>
+                    </div>
+                    <div class="card-footer">
+                        <form method="post" action="/menu/jsapi/">
+                            <input type="hidden" name="conferenceId" th:value="${conference.id}"/>
+                            <input type="hidden" name="description" th:value="${conference.serialNumber}"/>
+                            <input type="hidden" name="amount" th:value="${conference.fee}"/>
+                            <input type="hidden" name="remark" th:value="${conference.remark}"/>
+                            <input type="hidden" name="ticketCode" value=""/>
+                            <input type="submit" class="btn btn-outline-danger" value="支付"/>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <!--会议详情-->
+
+            <div class="card">
+                <div class="card-body">
+                    <p class="text-center">会议介绍</p>
+                    <span th:text="${conference.introduction}"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <img th:src="${conference.hosterLink}" alt="主持人" class="card-img-top">
+                <div class="card-body">
+                    <span th:text="${conference.hosterBrief}"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <img th:src="${conference.guestLink}" alt="嘉宾" class="card-img-top">
+                <div class="card-body">
+                    <span th:text="${conference.guestBrief}"></span>
+                </div>
+            </div>
+
+            <!--服务号二维码-->
+            <div class="card" style="margin-bottom: 48px;">
+                <div class="card-body text-center">
+                    <p>关注公众号</p>
+                    <img th:src="${qrcode}" alt="公众号二维码"/>
+                </div>
+                <!--参加会员列表-->
+                <div class="card">
+                    <div class="card-header">
+                        已报名(<span th:text="${conference.participants.size()}"></span>)
+                    </div>
+                    <!--列表-->
+                    <div class="text-right py-2 px-2 border-bottom" th:each="p,state:${conference.participants}"
+                         th:unless="${#lists.isEmpty(conference.participants)}">
+                        <div class="float-left">
+                            <img th:src="${p.memberHeadImgurl}" class="img-thumbnail rounded-circle"
+                                 style="width:32px;height:32px;"/>
+                            <span th:text="${p.memberName}"></span>
+                        </div>
+                        <span class="text-success"
+                              th:text="${#dates.format(p.createdTime,'yyyy/MM/dd HH:mm:ss')}"></span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

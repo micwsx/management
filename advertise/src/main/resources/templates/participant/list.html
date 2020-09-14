@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<nav th:replace="/shared/navigator::navigator"/>
+
+<div class="container">
+    <div class="row pt-2">
+        <div class="col">
+                <!--分页显示数据-->
+                <ul class="list-unstyled " th:each="item, state:${list}">
+                    <li th:attr="id=${item.conferenceId}" th:class="${#bools.isFalse(item.released)}? 'media alert-info':'media'">
+                        <img th:src="${item.banner}" style="width:256px;max-height: 128px"
+                             class="mr-3 align-self-center"
+                             alt="banner">
+                        <div class="media-body">
+                            <h5 class="mt-0 mb-1"><a th:href="@{show(id=${item.conferenceId})}"><span
+                                    th:text="${item.topic}"></span></a></h5>
+                            <h6>
+                                主讲人:<span th:text="${item.hoster}"></span>&nbsp;&nbsp;
+                                入场费用:<span th:text="${item.fee}"></span></h6>
+                            <h6>开始时间:<span th:text="${#dates.format(item.startTime,'yyyy-MM-dd hh:mm:ss')}"></span></h6>
+                            <h6 th:if="${item.seatNum-item.attendentNum==0}" class="alert-danger">名额已满</h6>
+                            <h6 th:if="${item.seatNum-item.attendentNum>0}">
+                                参加人数:<span th:text="${item.attendentNum}"></span>/剩余名额<span th:text="${item.seatNum-item.attendentNum}"/></h6>
+                            <h6>总支付金额:<span th:text="${item.total}"></span></h6>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+<!--<form action="getAll" method="get" class="form-inline">-->
+
+<!--    当前页 &nbsp;-->
+<!--    <input type="text" class="form-control form-control-sm" style="width:35px;" name="currentPage" th:value="${pageInfo.pageNum}"/>-->
+<!--    &nbsp;&nbsp;-->
+<!--    显示数量&nbsp;-->
+<!--    <input type="text" class="form-control form-control-sm" style="width:35px;" name="pageSize" th:value="${pageInfo.pageSize}"/>-->
+<!--    &nbsp;&nbsp;-->
+<!--    <input  type="submit" class="btn btn-info btn-sm" value="GO"/>-->
+<!--</form>-->

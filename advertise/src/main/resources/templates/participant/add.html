@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<div class="pt-2 px-2">
+
+    <form action="/participant/add" method="post">
+        <div class="card">
+            <div class="card-header">
+                参加人员
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Id</label>
+                        <input class="form-control" readonly name="id" th:value="${model.id}"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>会议ID</label>
+                        <input class="form-control" readonly name="conferenceId" th:value="${model.conferenceId}"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>会员ID</label>
+                        <input class="form-control" name="memberId" th:value="${model.memberId}"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>支付金额</label>
+                        <input class="form-control" name="paid" th:value="${model.paid}"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>优惠券编号</label>
+                        <input class="form-control" name="ticketCodeNum" th:value="${model.ticketCodeNum}"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>备注</label>
+                        <input class="form-control" type="text" name="remark" th:value="${model.remark}">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>支付状态</label>
+                        <select class="form-control" th:field="${model.completed}">
+                            <option th:selected="${model.completed}" value="true">已支付</option>
+                            <option th:selected="${model.completed}" value="false">待支付</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>客户端IP</label>
+                        <input class="form-control" type="text" readonly name="ipAddr" th:value="${model.ipAddr}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="offset-5">
+                        <a class="btn  btn-primary" th:href="@{/participant/query/(id=${model.conferenceId})}"
+                           name="cancel">取消</a>
+                        <button type="submit" class="btn  btn-primary" name="submit">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
+
+

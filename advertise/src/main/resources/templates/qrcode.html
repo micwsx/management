@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<div class="card" style="width: 20rem">
+    <img th:src="${qrcodeSrc}" class="card-img-top img-thumbnail" alt="公众号二维码"/>
+    <div class="card-body">
+        <span th:text="${qrcodeSrc}"></span>
+    </div>
+</div>
+</body>
+</html>

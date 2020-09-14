@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.micwsx.project.advertise.dao.ParticipantMapper">
+
+    <!-- Participant fields  -->
+    <resultMap type="Participant" id="record">
+        <id column="id" property="id" javaType="java.lang.String"/>
+        <id column="conference_id" property="conferenceId" javaType="java.lang.Integer"/>
+        <result column="memberId" property="memberId" javaType="java.lang.String"/>
+        <result column="paid" property="paid" javaType="java.lang.Float"/>
+        <result column="ticket_codeNum" property="ticketCodeNum" javaType="java.lang.String"/>
+        <result column="completed" property="completed" javaType="java.lang.Boolean"/>
+        <result column="ipAddr" property="ipAddr" javaType="java.lang.String"/>
+        <result column="remark" property="remark" javaType="java.lang.String"/>
+        <result column="changedTime" property="changedTime" javaType="java.util.Date"/>
+        <result column="createdTime" property="createdTime" javaType="java.util.Date"/>
+        <result column="data" property="data" javaType="java.lang.String"/>
+    </resultMap>
+
+    <!--会议简要-->
+    <resultMap type="ParticipantItem" id="item">
+        <result column="id" property="conferenceId" javaType="java.lang.Integer"/>
+        <result column="banner" property="banner" javaType="java.lang.String"/>
+        <result column="topic" property="topic" javaType="java.lang.String"/>
+        <result column="brief" property="brief" javaType="java.lang.String"/>
+        <result column="start_time" property="startTime" javaType="java.util.Date"/>
+        <result column="hoster" property="hoster" javaType="java.lang.String"/>
+        <result column="fee" property="fee" javaType="java.lang.Float"/>
+        <result column="seat_num" property="seatNum" javaType="java.lang.Integer"/>
+        <result column="attendant_num" property="attendentNum" javaType="java.lang.Integer"/>
+        <result column="total" property="total" javaType="java.lang.Double"/>
+        <result column="released" property="released" javaType="java.lang.Boolean"/>
+    </resultMap>
+
+    <!--会议参加人员明细-->
+    <resultMap id="participantInfo" type="ParticipantInfo">
+        <id column="id" property="id" javaType="java.lang.String"/>
+        <result column="conference_id" property="conferenceId" javaType="java.lang.Integer"/>
+        <result column="banner" property="banner" javaType="java.lang.String"/>
+        <result column="topic" property="topic" javaType="java.lang.String"/>
+        <result column="brief" property="brief" javaType="java.lang.String"/>
+        <result column="memberId" property="memberId" javaType="java.lang.String"/>
+        <result column="headImgurl" property="memberHeadImgurl" javaType="java.lang.String"/>
+        <result column="memberName" property="memberName" javaType="java.lang.String"/>
+        <result column="paid" property="paid" javaType="java.lang.Float"/>
+        <result column="ticketNum" property="ticketCodeNum" javaType="java.lang.String"/>
+        <result column="completed" property="completed" javaType="java.lang.Boolean"/>
+        <result column="ipAddr" property="ipAddr" javaType="java.lang.String"/>
+        <result column="remark" property="remark" javaType="java.lang.String"/>
+        <result column="changedTime" property="changedTime" javaType="java.util.Date"/>
+        <result column="createdTime" property="createdTime" javaType="java.util.Date"/>
+        <result column="data" property="data" javaType="java.lang.String"/>
+    </resultMap>
+
+    <sql id="allColumn">
+		id, conference_id, memberId,paid, ticket_codeNum, completed,ipAddr, remark, changedTime,createdTime,`data`
+	</sql>
+
+    <select id="selectById" resultMap="record" parameterType="java.lang.String">
+        select
+        <include refid="allColumn"/>
+        from participant
+        WHERE id=#{id};
+    </select>
+
+    <select id="selectAllSum" resultMap="item">
+        select c.id,c.banner,c.topic,c.brief,c.start_time,c.hoster,c.seat_num,c.fee, c.released, count(*) as attendant_num,sum(paid) as total
+        from participant p inner join conference c on p.conference_id=c.id
+        group by conference_id
+    </select>
+
+    <!--根据会议id,会员id,会员名名，支付状态查询-->
+    <select id="selectCriteria" resultMap="participantInfo" parameterType="MemberCondition">
+        select p.id,p.conference_id,c.banner,c.topic,c.brief, p.memberId,
+        m.headImgurl,m.name as memberName,p.paid,p.ticket_codeNum as ticketNum,p.completed,p.ipAddr,p.remark,p.changedTime,p.createdTime,p.data
+        from participant p right join member m on p.memberId=m.id
+        right join conference c on c.id=p.conference_id
+        where p.conference_id=#{id}
+        <if test="memberId !=null and memberId !=''">
+            and p.memberId=#{memberId}
+        </if>
+        <if test="memberName !=null and memberName !=''">
+            and m.name=#{memberName}
+        </if>
+        <if test="completed !=null">
+            and p.completed=#{completed}
+        </if>
+    </select>
+
+
+    <select id="selectAll" resultMap="record">
+        select
+        <include refid="allColumn"/>
+        from participant;
+    </select>
+
+
+    <insert id="add" parameterType="Participant">
+        INSERT INTO participant(id, conference_id, memberId,
+        paid, ticket_codeNum,ipAddr,completed, remark,`data`)
+        VALUES(#{id},#{conferenceId},#{memberId},
+        #{paid}, #{ticketCodeNum},#{ipAddr}, #{completed}, #{remark},#{data})
+    </insert>
+
+    <delete id="delete" parameterType="String">
+		DELETE FROM participant WHERE id=#{id};
+	</delete>
+
+    <insert id="addBatch">
+        INSERT INTO participant(id, conference_id, memberId,
+        paid, ticket_codeNum, ipAddr,completed, remark)
+        VALUES
+        <foreach collection="list" index="0" separator="," item="item">
+            (#{item.id},#{item.conferenceId},#{item.memberId},#{item.paid},#{item.ticketCodeNum},#{item.ipAddr},#{item.completed},#{item.remark})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBatch" parameterType="collection">
+        DELETE FROM participant WHERE id in
+        <foreach collection="array" open="(" separator="," item="id" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="Participant">
+        UPDATE participant
+        <set>
+            <if test="conferenceId != null and conferenceId !=''">
+                conference_id=#{conferenceId},
+            </if>
+            <if test="memberId != null and memberId !=''">
+                memberId=#{memberId},
+            </if>
+            <if test="paid!=null and paid !=''">
+                paid=#{paid},
+            </if>
+            <if test="ticketCodeNum != null and ticketCodeNum !=''">
+                ticket_codeNum=#{ticketCodeNum},
+            </if>
+            <if test="ipAddr != null and ipAddr !=''">
+                ipAddr=#{ipAddr},
+            </if>
+            <if test="completed!=null">
+                completed=#{completed},
+            </if>
+            <if test="remark!=null and remark !=''">
+                remark=#{remark},
+            </if>
+            <if test="data!=null and data !=''">
+                `data`=#{data},
+            </if>
+        </set>
+            WHERE id=#{id}
+    </update>
+</mapper>

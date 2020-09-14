@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col mt-5">
+
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <form action="/wechat/refresh" method="get">
+                        <input type="hidden" name="pid" th:value="participantId"/>
+                        <input type="submit" class="btn btn-outline-info invisible" value="查看支付结果"/>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function callWechat(){
+        WeixinJSBridge.invoke('getBrandWCPayRequest',JSON.parse([[${jsonParam}]]),
+            function(res){
+                console.log("微信支付返回结果："+res);
+                WeixinJSBridge.log(res.err_msg);
+                // 显示查询支付结果按钮
+                var button = $("input[type=\"submit\"]");
+                button.removeClass("invisible");
+                button.addClass("visible");
+                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                    // 使用以上方式判断前端返回,微信团队郑重提示：
+                    //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                }
+            }
+        );
+    }
+    function callEntry(){
+        if (typeof WeixinJSBridge == 'undefined'){
+            if (document.addEventListener){
+                document.addEventListener('WeixinJSBridgeReady', callWechat, false);
+            }else if(document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', callWechat);
+                document.attachEvent('onWeixinJSBridgeReady', callWechat);
+            }
+        }else{
+            callWechat()
+        }
+    }
+    callEntry();
+</script>
+</body>
+</html>

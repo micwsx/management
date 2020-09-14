@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会议</title>
+    <link href="../bootstrap/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="../bootstrap/bootstrap-reboot.min.css" type="text/css" rel="stylesheet"/>
+    <link href="../bootstrap/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../bootstrap-datepicker-1.9.0/css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../site/scripts/jquery-3.0.0.js"></script>
+    <script type="text/javascript" src="../site/scripts/popper.js"></script>
+    <script type="text/javascript" src="../site/scripts/bootstrap.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="jumbotron" style="background-image:url('../site/images/topic.jpg');
+    background-position: center; background-repeat:no-repeat;background-size: cover;">
+        <h1 class="display-4">Hello, world!</h1>
+        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+    </div>
+
+    <div class="col-auto">
+        选择：
+        <select class="form-control mb-2" name="completed" value="false">
+            <option value="null">所有</option>
+            <option value="true" selected="selected">已支付</option>
+            <option value="false">待支付</option>
+        </select>
+    </div>
+
+
+    <form>
+        <div class="list-group">
+            <div  class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="media">
+                    <img src="../site/images/head.jpeg" class="rounded-5 align-self-start mr-3" style="width:128px;height: 128px;"/>
+                    <div class="media-body">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Michael &nbsp;<b class="alert-danger">已支付</b></h5>
+                            <a href="#" class="btn btn-link"><small>3 days ago</small></a>
+                        </div>
+                        <h6 class="mb-1">100.0 &nbsp;<i>127.0.0.1</i></h6>
+                        <p class="mb-1">X97326634535</p>
+                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. M</p>
+                        <small>2020-09-03 8:01:09</small>
+                    </div>
+                </div>
+            </div>
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-muted">3 days ago</small>
+                </div>
+                <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <small class="text-muted">Donec id elit non mi porta.</small>
+            </div>
+            <div  class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-muted">3 days ago</small>
+                </div>
+                <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                <small class="text-muted">Donec id elit non mi porta.</small>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

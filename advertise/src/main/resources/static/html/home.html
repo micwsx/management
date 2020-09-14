@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会议</title>
+    <link href="../bootstrap/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="../bootstrap/bootstrap-reboot.min.css" type="text/css" rel="stylesheet"/>
+    <link href="../bootstrap/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../bootstrap-datepicker-1.9.0/css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../site/scripts/jquery-3.0.0.js"></script>
+    <script type="text/javascript" src="../site/scripts/popper.js"></script>
+    <script type="text/javascript" src="../site/scripts/bootstrap.js"></script>
+    <script type="text/javascript" src="../bootstrap-datepicker-1.9.0/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="../bootstrap-datepicker-1.9.0/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <!-- 官方地址：   https://www.malot.fr/bootstrap-datetimepicker/-->
+    <script type="text/javascript">
+
+        $(function () {
+            $("[data-toggle='popover']").each(function () {
+                $(this).popover({
+                    trigger: 'click',
+                    container: 'body',
+                    placement: 'bottom',
+                    html: true,
+                    content: '<ul class="list-group"><li class="list-group-item border-0 p-0 m-0"><a href="javascript:void(0)" class="btn-link" name="submit">编辑</a></li></ul>'
+                });
+            });
+
+        $("#startTime,#endTime").datetimepicker({
+            format: "yyyy-mm-dd hh:ii:00",//注意格式，不然出现1899年份问题
+            language:'zh-CN',
+            autoclose:true,
+            todayBtn:'linked'
+        }).on('changeDate', function(ev){
+            console.log(ev.date.valueOf());
+            // if (ev.date.valueOf() < date-start-display.valueOf()){
+            //
+            // }
+        });
+
+        });
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <form>
+        <!--会议数据-->
+        <div class="card">
+            <div class="card-header">
+                会议
+                <button type="button" class="btn btn-light float-right"
+                        data-toggle="popover" data-placement="bottom">
+                    <span aria-hidden="true" class="fa fa-ellipsis-h"></span>
+                </button>
+            </div>
+            <fieldset>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>会议展示图</label>
+                        <div>
+                            <img src="../site/images/head.jpeg" class="img-rounded">
+                            <input type="file" id="banner" class="form-control-file mt-1" name="banner"/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>编码</label>
+                            <input class="form-control" type="text" name="serialCode" value=""/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>主题</label>
+                            <input class="form-control" type="text" name="topic" value=""/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>简要</label>
+                        <textarea class="form-control" name="brief" id="brief" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>会议介绍</label>
+                        <textarea class="form-control" name="introduction" id="introduction" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>地点</label>
+                            <input class="form-control" type="text" name="location" value=""/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>人数</label>
+                            <input class="form-control" type="text" name="seat_num" value=""/>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>入场费用</label>
+                            <input class="form-control" type="text" name="fee" value=""/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>是否发布</label>
+                            <input class="form-control" type="checkbox" name="released" style="width:5px;" checked="checked">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>举办时间</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><span class="fa fa-calendar"></span></div>
+                                    </div>
+                                    <input class="form-control" readonly type="text" id="startTime" name="startTime" value="" placeholder="开始时间"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <span class="fa fa-calendar"></span>
+                                        </div>
+                                    </div>
+                                    <input class="form-control" type="text" readonly id="endTime" name="endTime" value="" placeholder="结束时间"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <input  type="text" class="form-control" name="remark" value="">
+                    </div>
+                </div>
+                <div class="card-header">
+                    主持人
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>主持人</label>
+                            <input type="text" class="form-control" name="hoster" value="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>图片</label>
+                            <input type="file" class="form-control-file" name="hosterLink" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>主持人介绍</label>
+                        <textarea class="form-control" name="hosterBrief" id="hosterBrief" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="card-header">
+                    嘉宾
+                </div>
+                <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>嘉宾</label>
+                        <input type="text" class="form-control" name="guest" value="">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>图片</label>
+                        <input type="file" class="form-control-file" name="guestLink" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>嘉宾介绍</label>
+                    <textarea class="form-control" name="guestBrief" id="guestBrief" rows="3"></textarea>
+                </div>
+            </div>
+                <div class="form-group">
+                    <div class="offset-5">
+                        <button type="submit" class="btn  btn-primary" name="submit">提交</button>
+                    </div>
+                </div>
+        </fieldset>
+        </div>
+
+
+    </form>
+
+</div>
+
+</body>
+</html>

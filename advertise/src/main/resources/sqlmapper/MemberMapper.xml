@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.micwsx.project.advertise.dao.MemberMapper">
+
+    <!-- Member fields  -->
+    <resultMap type="Member" id="record">
+        <id column="id" property="id" javaType="java.lang.String"/>
+        <id column="refId" property="refId" javaType="java.lang.String"/>
+        <result column="name" property="name" javaType="java.lang.String"/>
+        <result column="mobile" property="mobile" javaType="java.lang.String"/>
+        <result column="email" property="email" javaType="java.lang.String"/>
+        <result column="sharedQRcodeUrl" property="sharedQRcodeUrl" javaType="java.lang.String"/>
+        <result column="subscribe" property="subscribe" javaType="java.lang.Boolean"/>
+        <result column="nickName" property="nickName" javaType="java.lang.String"/>
+        <result column="gender" property="gender" javaType="java.lang.Boolean"/>
+        <result column="lang" property="lang" javaType="java.lang.String"/>
+        <result column="city" property="city" javaType="java.lang.String"/>
+        <result column="province" property="province" javaType="java.lang.String"/>
+        <result column="country" property="country" javaType="java.lang.String"/>
+        <result column="headImgurl" property="headImgurl" javaType="java.lang.String"/>
+        <result column="subscribeTime" property="subscribeTime" javaType="java.util.Date"/>
+        <result column="unionId" property="unionId" javaType="java.lang.String"/>
+        <result column="groupId" property="groupId" javaType="java.lang.String"/>
+        <result column="tagidlist" property="tagidlist" javaType="java.lang.String"/>
+        <result column="subscribeScene" property="subscribeScene" javaType="java.lang.String"/>
+        <result column="qrScene" property="qrScene" javaType="java.lang.String"/>
+        <result column="qrSceneStr" property="qrSceneStr" javaType="java.lang.String"/>
+        <result column="latitude" property="latitude" javaType="java.lang.String"/>
+        <result column="longitude" property="longitude" javaType="java.lang.String"/>
+        <result column="precision" property="precision" javaType="java.lang.String"/>
+        <result column="onBlackList" property="onBlackList" javaType="java.lang.Boolean"/>
+        <result column="active" property="active" javaType="java.lang.Boolean"/>
+        <result column="createdTime" property="createdTime" javaType="java.util.Date"/>
+        <result column="changedTime" property="changedTime" javaType="java.util.Date"/>
+        <result column="remark" property="remark" javaType="java.lang.String"/>
+        <!-- <collection property="roles" ofType="Role" columnPrefix="post_">
+           <id column="id" property="id" javaType="java.lang.Integer"/>
+           <result column="name" property="name" javaType="java.lang.String"/>
+       </collection>  -->
+    </resultMap>
+
+    <sql id="allColumn">
+		id, refId, name, mobile, email,sharedQRcodeUrl,
+		subscribe, nickName, gender, lang, city,
+		province, country, headImgurl, subscribeTime, unionId,
+		groupId, tagidlist, subscribeScene, qrScene, qrSceneStr,
+		latitude, longitude, `precision`, onBlackList, active,changedTime,
+		createdTime, remark
+	</sql>
+
+    <select id="selectById" resultMap="record" parameterType="java.lang.String">
+        select
+        <include refid="allColumn"/>
+        from member
+        WHERE id=#{id};
+    </select>
+
+
+    <select id="selectAll" resultMap="record">
+        select
+        <include refid="allColumn"/>
+        from member;
+    </select>
+
+    <select id="selectCriteria" resultMap="record" parameterType="Member">
+        SELECT
+        <include refid="allColumn"/>
+        FROM member
+        <where>
+            <if test="id !=null and id !=''">
+                and id=#{id}
+            </if>
+            <if test="name !=null and name !=''">
+                and name=#{name}
+            </if>
+            <if test="mobile !=null and mobile !=''">
+                and mobile=#{mobile}
+            </if>
+            <if test="subscribe !=null and subscribe !=''">
+                and subscribe=#{subscribe}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="add" parameterType="Member">
+        INSERT INTO member(id, refId, name, mobile, email,sharedQRcodeUrl,
+        subscribe, nickName, gender, lang, city,
+        province, country, headImgurl, subscribeTime, unionId,
+        groupId, tagidlist, subscribeScene, qrScene, qrSceneStr,
+        latitude, longitude, `precision`, onBlackList,remark)
+        VALUES(#{id},#{refId},#{name},#{mobile},#{email},#{sharedQRcodeUrl},
+        #{subscribe}, #{nickName}, #{gender}, #{lang}, #{city},
+        #{province}, #{country}, #{headImgurl}, #{subscribeTime}, #{unionId},
+        #{groupId}, #{tagidlist}, #{subscribeScene}, #{qrScene}, #{qrSceneStr},
+        #{latitude}, #{longitude}, #{precision}, #{onBlackList}, #{remark})
+        <!-- <selectKey keyProperty="id" resultType="int" order="AFTER">
+            <![CDATA[ SELECT LAST_INSERT_ID() ]]>
+        </selectKey> -->
+    </insert>
+
+    <delete id="delete" parameterType="String">
+		DELETE FROM member WHERE id=#{id};
+	</delete>
+
+    <insert id="addBatch" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO member(id, userName, sex, remark)
+        VALUES
+        <foreach collection="list" index="0" separator="," item="user">
+            (#{user.id,jdbcType=INTEGER},#{user.userName,jdbcType=VARCHAR},#{user.sex,jdbcType=TINYINT},#{user.remark,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBatch" parameterType="collection">
+        DELETE FROM member WHERE id in
+        <foreach collection="array" open="(" separator="," item="id" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="update" parameterType="Member">
+        UPDATE member
+        <set>
+            <if test="refId != null and refId !=''">
+                refId=#{refId},
+            </if>
+            <if test="name != null and name !=''">
+                name=#{name},
+            </if>
+            <if test="mobile != null and mobile !=''">
+                mobile=#{mobile},
+            </if>
+            <if test="email!=null and email !=''">
+                email=#{email},
+            </if>
+            <if test="sharedQRcodeUrl!=null and sharedQRcodeUrl !=''">
+                sharedQRcodeUrl=#{sharedQRcodeUrl},
+            </if>
+            <if test="active!=null">
+                active=#{active},
+            </if>
+            <if test="subscribe != null">
+                subscribe=#{subscribe},
+            </if>
+            <if test="nickName!=null and nickName !=''">
+                nickName=#{nickName},
+            </if>
+            <if test="gender!=null">
+                gender=#{gender},
+            </if>
+            <if test="lang!=null and lang !=''">
+                lang=#{lang},
+            </if>
+            <if test="city!=null and city !=''">
+                city=#{city},
+            </if>
+            <if test="province!=null and province !=''">
+                province=#{province},
+            </if>
+            <if test="headImgurl!=null and headImgurl !=''">
+                headImgurl=#{headImgurl},
+            </if>
+            <if test="subscribeTime!=null">
+                subscribeTime=#{subscribeTime},
+            </if>
+            <if test="unionId!=null and unionId !=''">
+                unionId=#{unionId},
+            </if>
+            <if test="groupId!=null and groupId !=''">
+                groupId=#{groupId},
+            </if>
+            <if test="tagidlist!=null and tagidlist !=''">
+                tagidlist=#{tagidlist},
+            </if>
+            <if test="subscribeScene!=null and subscribeScene !=''">
+                subscribeScene=#{subscribeScene},
+            </if>
+            <if test="qrScene!=null and qrScene !=''">
+                qrScene=#{qrScene},
+            </if>
+            <if test="qrSceneStr!=null and qrSceneStr !=''">
+                qrSceneStr=#{qrSceneStr},
+            </if>
+            <if test="latitude!=null and latitude !=''">
+                latitude=#{latitude},
+            </if>
+            <if test="longitude!=null and longitude !=''">
+                longitude=#{longitude},
+            </if>
+            <if test="precision!=null and precision !=''">
+                `precision`=#{precision},
+            </if>
+            <if test="onBlackList!=null">
+                onBlackList=#{onBlackList},
+            </if>
+            <if test="remark!=null and remark !=''">
+                remark=#{remark},
+            </if>
+        </set>
+            WHERE id=#{id}
+    </update>
+
+    <!-- 批量操作参考地址：https://www.jianshu.com/p/041bec8ae6d3-->
+    <update id="batchUpdateSubscribe" parameterType="java.util.Map">
+        UPDATE member SET subscribe = #{subscribe}
+        <where>
+            <if test="idList!=null and idList !=''">
+                id IN (${idList})
+            </if>
+        </where>
+    </update>
+
+    <!--call procedure-->
+    <resultMap type="MemberHierarchy" id="recordHierarchy">
+        <id column="id" property="id" javaType="java.lang.String"/>
+        <id column="refId" property="refId" javaType="java.lang.String"/>
+        <result column="name" property="name" javaType="java.lang.String"/>
+        <result column="nickName" property="nickName" javaType="java.lang.String"/>
+        <result column="headImgurl" property="headImgUrl" javaType="java.lang.String"/>
+        <result column="sharedQRcodeUrl" property="sharedQRcodeUrl" javaType="java.lang.String"/>
+        <result column="subscribeTime" property="subscribeTime" javaType="java.util.Date"/>
+        <result column="level" property="level" javaType="java.lang.Integer"/>
+        <result column="p_name" property="parentName" javaType="java.lang.String"/>
+        <result column="p_nickName" property="parentNickName" javaType="java.lang.String"/>
+        <result column="p_headImgurl" property="parentHeadImgUrl" javaType="java.lang.String"/>
+    </resultMap>
+
+
+    <select id="getChildTable" parameterType="String" statementType="CALLABLE" resultMap="recordHierarchy">
+		call getChildTable(#{id});
+	</select>
+
+    <select id="getParentList" parameterMap="paramMap" statementType="CALLABLE">
+		call getParentList(#{id,jdbcType=VARCHAR,mode=IN},#{parentList,jdbcType=VARCHAR,mode=OUT});
+	</select>
+    
+    <parameterMap id="paramMap" type="java.util.Map">
+        <parameter property="id" jdbcType="VARCHAR" mode="IN"></parameter>
+        <parameter property="parentList" jdbcType="VARCHAR" mode="OUT"></parameter>
+    </parameterMap>
+
+</mapper>

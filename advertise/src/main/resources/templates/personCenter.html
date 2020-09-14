@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<div class="container">
+    <div class="row pt-2">
+        <div class="col">
+            <div class="card-header">
+                我
+            </div>
+            <div class="card">
+                <div class="card-body d-inline-block">
+                    <img class="img-thumbnail border-0" style="width:64px;height:64px;" th:src="${person.headImgurl}"/>
+                    <span th:text="${person.name}"></span>
+                    <button data-toggle="modal" data-target="#qrcode" class="btn btn-link">我的推荐码</button>
+                    <p th:text="${#dates.format(person.subscribeTime,'yyyy-MM-dd HH:mm:ss')}"></p>
+                </div>
+            </div>
+
+            <!--Reference-->
+            <div class="card" th:if="${not #strings.isEmpty(person.refId)}">
+                <div class="card-header">
+                    你的推荐人
+                </div>
+                <div class="card-body">
+                    <img class="img-thumbnail border-0" style="width:64px;height:64px;"
+                         th:src="${person.parentHeadImgurl}"/>
+                    <span th:text="${person.parentName}"></span>
+                </div>
+            </div>
+
+            <!--Team-->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <span class="fa fa-group pr-1"></span>
+                    <span>我的团队</span>
+                </div>
+                <div class="card-body" style="padding:0;">
+                    <div class="card-group text-center">
+                        <div class="card border-0 align-items-center mt-2">
+                            <div class="card-body border-danger rounded-circle"
+                                 style="border-width:3px;border-style:solid;width:110px;height:110px;">
+                                <span th:text="${person.total}"></span>人<br/>
+                                <span>总人数</span>
+                            </div>
+                        </div>
+                        <div class="card border-0 align-items-center mt-2">
+                            <div class="card-body border-primary rounded-circle "
+                                 style="border-width:3px;border-style:solid;width:110px;height:110px;">
+                                <span th:text="${person.directMembers.size()}"></span>人<br/>
+                                <span>直属会员</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer w-100 d-flex mt-2 text-center">
+                    <div class="w-50 d-flex">
+                        <div class="border-right w-50">
+                            <span th:text="${person.todayNum}"></span>人<br/>
+                            <span>今日</span>
+                        </div>
+                        <div class="w-50 border-right">
+                            <span th:text="${person.yesterdayNum}"></span>人<br/>
+                            <span>昨日</span>
+                        </div>
+                    </div>
+                    <div class="w-50 d-flex">
+                        <div class="border-right w-50">
+                            <span th:text="${person.directMembers.size()}"></span>人<br/>
+                            <span>直属会员</span>
+                        </div>
+                        <div class="w-50">
+                            <span th:text="${person.inDirectMembers.size()}"></span>人<br/>
+                            <span>非直属会员</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--membership-->
+            <nav class="mt-3">
+                <div class="nav nav-tabs">
+                    <a class="nav-item nav-link active flex-fill text-dark" data-toggle="tab" href="#direct" role="tab">直属会员</a>
+                    <a class="nav-item nav-link text-dark flex-fill" data-toggle="tab" href="#inDirect"
+                       role="tab">非直属会员</a>
+                </div>
+            </nav>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" role="tabpanel" id="direct">
+                    <div class="text-right py-2 px-2 border-bottom bg-light"
+                         th:each="member,iterStat:${person.directMembers}">
+                        <div class="float-left">
+                            <img th:src="${member.headImgUrl}" class="img-thumbnail rounded-circle"
+                                 style="width:32px;height:32px;"/>
+                            <span th:text="${member.name}"></span>
+                        </div>
+                        <span class="text-success"
+                              th:text="${#dates.format(member.subscribeTime,'yyyy/MM/dd HH:mm:ss')}"></span>
+                    </div>
+                </div>
+                <div class="tab-pane fade" role="tabpanel" id="inDirect">
+                    <div class="text-right py-2 px-2 border-bottom bg-light"
+                         th:each="member,iterStat:${person.inDirectMembers}">
+                        <div class="float-left">
+                            <img th:src="${member.headImgUrl}" class="img-thumbnail rounded-circle"
+                                 style="width:32px;height:32px;"/>
+                            <span th:text="${member.name}"></span>
+                        </div>
+                        <span class="text-success"
+                              th:text="${#dates.format(member.subscribeTime,'yyyy/MM/dd HH:mm:ss')}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    参与会议
+                </div>
+                <ul class="list-unstyled" th:each="conference,iterStat:${person.recentActivities}">
+                    <li class="media">
+                        <img class="align-self-center mr-3" th:src="${conference.banner}"style="width:128px;max-height:100px" alt="banner" >
+                        <div class="media-body">
+                            <h5 class="mt-0 mb-1" th:text="${#strings.concat(conference.topic,' - ',conference.hoster)}"></h5>
+                            <div th:text="${#dates.format(conference.startTime,'yyyy/MM/dd HH:mm:ss')}"></div>
+                            <div th:text="${conference.location}"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="qrcode" role="dialog">
+    <div class="modal-dialog">
+ <!--       <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">我的推荐码</h4>
+        </div>-->
+        <div class="modal-body">
+            <img th:src="${person.recommendQRCodeSrc}" alt="我的推荐码" class="img-fluid img-thumbnail"/>
+        </div>
+    </div>
+</div>
+
+<!--<table>-->
+<!--    <tbody>-->
+<!--    <tr>-->
+<!--        <td th:text="${person.headImgurl}" colspan="2"></td>-->
+<!--        <td th:text="${person.name}"></td>-->
+<!--        <td th:text="${person.subscribeTime}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td>推荐人:<span th:text="${person.parentName}"></span></td>-->
+<!--        <td>总人数:<span th:text="${person.total}"></span></td>-->
+<!--        <td rowspan="2" colspan="2">我的推荐码：<span th:text="${person.id}"></span></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td >今日<span th:text="${person.todayNum}"></span></td>-->
+<!--        <td >昨日<span th:text="${person.yesterdayNum}"></span></td>-->
+<!--        <td >直属人数<span th:text="${person.directMembers.size()}"></span></td>-->
+<!--        <td >非直属人数<span th:text="${person.inDirectMembers.size()}"></span></td>-->
+<!--    </tr>-->
+
+<!--    </tbody>-->
+<!--</table>-->
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+<div class="container">
+    <div class="row pt-2">
+        <div class="col">
+            <div class="card-deck">
+                <div class="card" th:each="item,iterStat:${list}" th:unless="${#lists.isEmpty(list)}">
+                    <img th:src="${item.banner}" class="card-img-top" alt="活动主题">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${item.topic}"></h5>
+                        <p class="card-text" th:text="${item.brief}"></p>
+                        <p class="card-text" th:text="${#strings.concat(item.location,'-',item.hoster,'(',item.hosterBrief,')')}"></p>
+                        <p class="card-text"><span th:text="${#dates.format(item.startTime, 'yyyy/MM/dd HH:mm:ss')}"></span>-<span th:text="${#dates.format(item.endTime, 'yyyy/MM/dd HH:mm:ss')}"></span></p>
+                        <p class="card-text">已报名<span th:text="${item.registeredNum}"></span>人/剩余<span th:text="${item.seatNum-item.registeredNum}"></span>名额</p>
+                        <p class="card-text">入场费：<span th:text="${item.fee}"></span> RMB</p>
+                        <p class="card-text">
+                            <a class="btn btn-outline-dark" th:href="${#strings.append('activity/',item.id)}">详细</a>
+                            <button class="btn btn-outline-danger">购买</button>
+                        </p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+                <div class="card" th:if="${#lists.isEmpty(list)}">
+                    <div class="card-body">
+                        <h5 class="card-title">尽请期待...</h5>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

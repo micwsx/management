@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.micwsx.project.advertise.dao.ConferenceMapper">
+
+    <!-- Member fields  -->
+    <resultMap type="Conference" id="record">
+        <id column="id" property="id" javaType="java.lang.Integer"/>
+        <id column="serial_number" property="serialNumber" javaType="java.lang.String"/>
+        <id column="banner" property="banner" javaType="java.lang.String"/>
+        <result column="topic" property="topic" javaType="java.lang.String"/>
+        <result column="brief" property="brief" javaType="java.lang.String"/>
+        <result column="introduction" property="introduction" javaType="java.lang.String"/>
+        <result column="location" property="location" javaType="java.lang.String"/>
+        <result column="site_link" property="siteLink" javaType="java.lang.String"/>
+        <result column="site_brief" property="siteBrief" javaType="java.lang.String"/>
+        <result column="hoster" property="hoster" javaType="java.lang.String"/>
+        <result column="hoster_link" property="hosterLink" javaType="java.lang.String"/>
+        <result column="hoster_brief" property="hosterBrief" javaType="java.lang.String"/>
+        <result column="guest" property="guest" javaType="java.lang.String"/>
+        <result column="guest_link" property="guestLink" javaType="java.lang.String"/>
+        <result column="guest_brief" property="guestBrief" javaType="java.lang.String"/>
+        <result column="fee" property="fee" javaType="java.lang.Float"/>
+        <result column="start_time" property="startTime" javaType="java.util.Date"/>
+        <result column="end_time" property="endTime" javaType="java.util.Date"/>
+        <result column="released" property="released" javaType="java.lang.Boolean"/>
+        <result column="seat_num" property="seatNum" javaType="java.lang.Integer"/>
+        <result column="remark" property="remark" javaType="java.lang.String"/>
+        <result column="createdTime" property="createdTime" javaType="java.util.Date"/>
+        <collection property="participants" ofType="ParticipantInfo" columnPrefix="post_">
+            <id column="id" property="id" javaType="java.lang.String"/>
+            <result column="conferenceId" property="conferenceId" javaType="java.lang.Integer"/>
+            <result column="memberId" property="memberId" javaType="java.lang.String"/>
+            <result column="headImgurl" property="memberHeadImgurl" javaType="java.lang.String"/>
+            <result column="memberName" property="memberName" javaType="java.lang.String"/>
+            <result column="paid" property="paid" javaType="java.lang.Float"/>
+            <result column="ticketNum" property="ticketCodeNum" javaType="java.lang.String"/>
+            <result column="completed" property="completed" javaType="java.lang.Boolean"/>
+            <result column="ipAddr" property="ipAddr" javaType="java.lang.String"/>
+            <result column="remark" property="remark" javaType="java.lang.String"/>
+            <result column="createdTime" property="createdTime" javaType="java.util.Date"/>
+        </collection>
+    </resultMap>
+
+    <resultMap type="ConferenceItem" id="item">
+        <id column="id" property="id" javaType="java.lang.Integer"/>
+        <id column="serial_number" property="serialNumber" javaType="java.lang.String"/>
+        <id column="banner" property="banner" javaType="java.lang.String"/>
+        <result column="topic" property="topic" javaType="java.lang.String"/>
+        <result column="brief" property="brief" javaType="java.lang.String"/>
+        <result column="location" property="location" javaType="java.lang.String"/>
+        <result column="hoster" property="hoster" javaType="java.lang.String"/>
+        <result column="hoster_brief" property="hosterBrief" javaType="java.lang.String"/>
+        <result column="guest" property="guest" javaType="java.lang.String"/>
+        <result column="guest_brief" property="guestBrief" javaType="java.lang.String"/>
+        <result column="fee" property="fee" javaType="java.lang.Float"/>
+        <result column="start_time" property="startTime" javaType="java.util.Date"/>
+        <result column="end_time" property="endTime" javaType="java.util.Date"/>
+        <result column="seat_num" property="seatNum" javaType="java.lang.Integer"/>
+        <result column="registered_num" property="registeredNum" javaType="java.lang.Integer"/>
+    </resultMap>
+
+    <sql id="allColumn">
+		id,serial_number,banner,topic,brief,introduction,
+        location,site_link,site_brief,hoster,hoster_link,
+        hoster_brief,guest,guest_link,guest_brief,fee,
+        start_time,end_time,released,seat_num,remark,
+        createdTime
+	</sql>
+
+    <!--根据会议Id获取会议成员数据-->
+    <select id="selectById" resultMap="record" parameterType="java.lang.Integer">
+        select c.*,
+        p.id as post_id,
+        p.conference_id as post_conferenceId,
+        p.memberId as post_memberId,
+        m.headImgurl as post_headImgurl,
+        m.name as post_memberName,
+        p.paid as post_paid,
+        p.ticket_codeNum as post_ticketNum,
+        p.completed as post_completed,
+        p.ipAddr as post_ipAddr,
+        p.remark as post_remark,
+        p.createdTime as post_createdTime
+        from conference c left join participant p on c.id=p.conference_Id
+        left join member m on m.id=p.memberId
+        where c.id=#{id,jdbcType=INTEGER}
+    </select>
+
+    <!--查询会议记录（不包含参加人员数据）,根据会议编号和举办时间，-->
+    <select id="selectAll" resultMap="record" parameterType="java.util.Map">
+        select
+        <include refid="allColumn"/>
+        from conference
+        <where>
+            <if test="serialNum!=null and serialNum!=''">
+                and serial_number=#{serialNum}
+            </if>
+            <if test="startTime!=null">
+                and date_format(start_time,'%Y-%m-%d')=date_format(#{startTime},'%Y-%m-%d')
+            </if>
+        </where>
+    </select>
+
+    <!--获取未开始的会议与参数人关系数据-->
+    <select id="selectValid" resultMap="item">
+        select c.id,c.serial_number,c.banner,c.topic,c.brief,c.location,
+        c.hoster,c.hoster_brief,c.guest,c.guest_brief,c.start_time,
+        c.end_time,c.seat_num,c.fee, count(p.memberId) as registered_num
+        from conference c left join participant p on c.id=p.conference_Id
+        where released=1 and UNIX_TIMESTAMP(start_time)> unix_timestamp(now())
+        group by c.id;
+    </select>
+
+    <!--根据会员id获取会员参加会议按会议记录 按时间降序-->
+    <select id="selectConferences" resultMap="item" parameterType="java.lang.String">
+       select c.*
+        from conference c left join participant p on c.id=p.conference_Id
+        where p.memberId=#{memberId}
+        group by c.start_time desc;
+    </select>
+
+
+    <!--添加会议记录-->
+    <insert id="add" parameterType="Conference">
+        INSERT INTO conference(serial_number,banner,topic,brief,introduction,
+        location,site_link,site_brief,hoster,hoster_link,
+        hoster_brief,guest,guest_link,guest_brief,fee,
+        start_time,end_time,released,seat_num,remark)
+        VALUES(#{serialNumber},#{banner},#{topic},#{brief},#{introduction},#{location},
+        #{siteLink}, #{siteBrief}, #{hoster}, #{hosterLink}, #{hosterBrief},
+        #{guest}, #{guestLink}, #{guestBrief}, #{fee}, #{startTime},
+        #{endTime}, #{released}, #{seatNum}, #{remark})
+        <!-- <selectKey keyProperty="id" resultType="int" order="AFTER">
+            <![CDATA[ SELECT LAST_INSERT_ID() ]]>
+        </selectKey> -->
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM conference WHERE id=#{id};
+	</delete>
+
+
+
+    <delete id="deleteBatch" parameterType="collection">
+        DELETE FROM conference WHERE id in
+        <foreach collection="array" open="(" separator="," item="id" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--更新会议-->
+    <update id="update" parameterType="Conference">
+        UPDATE conference
+        <set>
+            <if test="serialNumber != null and serialNumber !=''">
+                serial_number=#{serialNumber},
+            </if>
+            <if test="banner != null and banner != ''">
+                banner=#{banner},
+            </if>
+            <if test="topic != null and topic != ''">
+                topic=#{topic},
+            </if>
+            <if test="brief != null and brief != ''">
+                brief=#{brief},
+            </if>
+            <if test="introduction != null and introduction != ''">
+                introduction=#{introduction},
+            </if>
+            <if test="location != null and location != ''">
+                location=#{location},
+            </if>
+            <if test="siteLink != null and siteLink != ''">
+                site_link=#{siteLink},
+            </if>
+            <if test="siteBrief != null and siteBrief != ''">
+                site_brief=#{siteBrief},
+            </if>
+            <if test="hoster != null and hoster != ''">
+                hoster=#{hoster},
+            </if>
+            <if test="hosterLink != null and hosterLink != ''">
+                hoster_link=#{hosterLink},
+            </if>
+            <if test="hosterBrief != null and hosterBrief != ''">
+                hoster_brief=#{hosterBrief},
+            </if>
+            <if test="guest != null and guest != ''">
+                guest=#{guest},
+            </if>
+            <if test="guestLink != null and guestLink != ''">
+                guest_link=#{guestLink},
+            </if>
+            <if test="guestBrief != null and guestBrief != ''">
+                guest_brief=#{guestBrief},
+            </if>
+            <if test="fee != null and fee !=''">
+                fee=#{fee},
+            </if>
+            <if test="startTime != null">
+                start_time=#{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time=#{endTime},
+            </if>
+            <if test="released != null">
+                released=#{released,jdbcType=BIT},
+            </if>
+            <if test="seatNum != null and seatNum != ''">
+                seat_num=#{seatNum},
+            </if>
+            <if test="remark!=null and remark != ''">
+                remark=#{remark},
+            </if>
+        </set>
+            WHERE id=#{id}
+    </update>
+
+
+
+
+</mapper>

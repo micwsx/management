@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>static</title>
+    <link href="../bootstrap/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="../bootstrap/bootstrap-reboot.min.css" type="text/css" rel="stylesheet"/>
+    <link href="../bootstrap/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../site/scripts/jquery-3.0.0.slim.js"></script>
+    <script type="text/javascript" src="../site/scripts/popper.js"></script>
+    <script type="text/javascript" src="../site/scripts/bootstrap.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="row pt-2">
+        <div class="col">
+            <!--会议基础信息-->
+            <div class="card-deck">
+                <div class="card">
+                    <img src="../site/images/topic.jpg" class="card-img-top" alt="活动主题">
+                    <div class="card-body">
+                        <h5 class="card-title">分威风威风富士达地</h5>
+                        <p class="card-text">简介电费网费儒暮云春树革春树暮云克格勃春树暮云的撒反对甘城城魂牵梦萦地</p>
+                        <p class="card-text">主持人</p>
+                        <p class="card-text">嘉宾</p>
+                        <p class="card-text">地点：分威风威风的是暮云春树工需要</p>
+                        <p class="card-text">2020/9/8 10:00-12:00</p>
+                        <p class="card-text">已报名1人/剩余19名额</p>
+                        <p class="card-text">费用 10 RMB</p>
+                        <p class="card-text">不支持退款</p>
+                    </div>
+                    <div class="card-footer">
+                        <form method="post" action="/wechat/jsapi/">
+                            <input type="hidden" name="conferenceId" value="${conference.id}"/>
+                            <input type="hidden" name="description" value="${conference.serialNumber}"/>
+                            <input type="hidden" name="amount" value="${conference.fee}"/>
+                            <input type="hidden" name="remark" value="${conference.remark}"/>
+                            <input type="hidden" name="ticketCode" value=""/>
+                            <input type="submit" class="btn btn-outline-danger" value="支付"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--会议详情-->
+            <div>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="text-center">会议介绍</p>
+                        的说法的撒魂牵梦萦FDA魂牵梦萦FDAFDA南非世界杯FDAFDA魂牵梦萦FDAFDA需要魂牵梦萦需要甘桂花城甘撒发达城南非世界杯堙
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="../site/images/head.jpeg" alt="主持人" class="card-img-top">
+                    <div class="card-body">
+                        的说法的撒魂牵梦萦FDA魂牵梦萦FDAFDA南非世界杯FDAFDA魂牵梦萦FDAFDA需要魂牵梦萦需要甘桂花城甘撒发达城南非世界杯堙
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="../site/images/head.jpeg" alt="嘉宾" class="card-img-top">
+                    <div class="card-body">
+                        的说法的撒魂牵梦萦FDA魂牵梦萦FDAFDA南非世界杯FDAFDA魂牵梦萦FDAFDA需要魂牵梦萦需要甘桂花城甘撒发达城南非世界杯堙
+                    </div>
+                </div>
+            </div>
+            <!--服务号二维码-->
+            <div class="card" style="margin-bottom: 48px;">
+                <div class="card-body">
+                    <p class="text-center">关注公众号</p>
+                    <img src="../site/images/offical_qrcode.jpg" alt="公众号二维码"/>
+                    </p>
+                </div>
+                <!--参加会员列表-->
+                <div class="card">
+                    <div class="card-header">
+                        已报名(1)
+                    </div>
+                    <!--列表-->
+                    <div class="text-right py-2 px-2 border-bottom">
+                        <div class="float-left">
+                            <img src="../site/images/head.jpeg" class="img-thumbnail rounded-circle"
+                                 style="width:32px;height:32px;"/>
+                            <span>Michael</span>
+                        </div>
+                        <span class="text-success">2020-9-8 9:23:09</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+<div class="border" style="position: fixed; left: 0;right: 0;bottom: 0">
+    <button class="btn btn-block btn-danger">Pay</button>
+</div>
+
+
+
+
+</body>
+</html>

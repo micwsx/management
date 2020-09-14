@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/shared/common_js_css::head"></head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col mt-5">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title" th:text="${status}"></h5>
+                    <!--                  <p class="card-text">支付成功</p>-->
+                    <a class="btn btn-link btn-outline-info" th:href="@{/menu/activity/{id}(id=${conferenceId}})}" th:unless="${#strings.isEmpty(conferenceId)}">返回会议</a>
+                    <a class="btn btn-link btn-outline-info" th:href="@{/menu/activities}" th:if="${#strings.isEmpty(conferenceId)}">返回会议</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
